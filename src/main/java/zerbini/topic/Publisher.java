@@ -1,4 +1,4 @@
-package zerbini;
+package zerbini.topic;
 
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
@@ -8,9 +8,8 @@ import javax.jms.MessageProducer;
 import javax.jms.Session;
 import javax.jms.TextMessage;
 import org.apache.activemq.ActiveMQConnectionFactory;
-import org.json.JSONObject;
 
-public class JsonPublisher {
+public class Publisher {
 
     public static void main(String[] args) {
 
@@ -18,19 +17,17 @@ public class JsonPublisher {
         try {
             Connection connection = factory.createConnection();
             Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-            Destination destination = session.createQueue("JSON-queue");
 
-            JSONObject json = new JSONObject();
-            json.put("from_date", "01-Jan-2019");
-            json.put("to_date", "31-Dec-2019");
-            json.put("email", "example@gmail.com");
-            json.put("query", "select * from data");
-
-            TextMessage textMessage = session.createTextMessage(json.toString());
+            // Create topic if it does not exist already
+            Destination destination = session.createTopic("demo-topic");
 
             MessageProducer producer = session.createProducer(destination);
+
+            TextMessage textMessage = session.createTextMessage("Message for topic");
+            // Publish the message to the topic
             producer.send(textMessage);
-            System.out.println("Message published in JSON-queue");
+
+            System.out.println("Message published to topic");
 
             session.close();
             connection.close();
@@ -38,5 +35,4 @@ public class JsonPublisher {
             throw new RuntimeException(e);
         }
     }
-
 }

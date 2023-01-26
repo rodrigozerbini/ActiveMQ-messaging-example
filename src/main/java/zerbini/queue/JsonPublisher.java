@@ -1,4 +1,4 @@
-package zerbini;
+package zerbini.queue;
 
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
@@ -8,9 +8,9 @@ import javax.jms.MessageProducer;
 import javax.jms.Session;
 import javax.jms.TextMessage;
 import org.apache.activemq.ActiveMQConnectionFactory;
+import org.json.JSONObject;
 
-public class Publisher {
-
+public class JsonPublisher {
 
     public static void main(String[] args) {
 
@@ -18,26 +18,19 @@ public class Publisher {
         try {
             Connection connection = factory.createConnection();
             Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+            Destination destination = session.createQueue("JSON-queue");
 
-            // Create queue if it does not exist already
-            Destination destination = session.createQueue("demo");
+            JSONObject json = new JSONObject();
+            json.put("from_date", "01-Jan-2019");
+            json.put("to_date", "31-Dec-2019");
+            json.put("email", "example@gmail.com");
+            json.put("query", "select * from data");
 
-            String[] messages = {
-                    "First message",
-                    "Second message",
-                    "Third message",
-                    "Fourth message"
-            };
+            TextMessage textMessage = session.createTextMessage(json.toString());
 
             MessageProducer producer = session.createProducer(destination);
-
-            for (String message : messages) {
-                TextMessage textMessage = session.createTextMessage(message);
-                // Publish the message to the queue
-                producer.send(textMessage);
-            }
-
-            System.out.println("Messages published");
+            producer.send(textMessage);
+            System.out.println("Message published in JSON-queue");
 
             session.close();
             connection.close();
@@ -45,4 +38,5 @@ public class Publisher {
             throw new RuntimeException(e);
         }
     }
+
 }

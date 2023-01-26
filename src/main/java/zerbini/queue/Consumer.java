@@ -1,6 +1,5 @@
-package zerbini;
+package zerbini.queue;
 
-import java.util.Iterator;
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
@@ -11,10 +10,8 @@ import javax.jms.MessageListener;
 import javax.jms.Session;
 import javax.jms.TextMessage;
 import org.apache.activemq.ActiveMQConnectionFactory;
-import org.json.JSONObject;
-import org.w3c.dom.Text;
 
-public class JsonConsumer {
+public class Consumer {
 
     public static void main(String[] args) {
 
@@ -29,7 +26,7 @@ public class JsonConsumer {
             Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 
             // Create queue if it does not exist
-            Destination destination = session.createQueue("JSON-queue");
+            Destination destination = session.createQueue("demo");
 
             MessageConsumer consumer = session.createConsumer(destination);
             // Consumer is in listening mode
@@ -38,13 +35,7 @@ public class JsonConsumer {
                 public void onMessage(Message message) {
                     TextMessage textMessage = (TextMessage) message;
                     try {
-                        String jsonString = textMessage.getText();
-                        JSONObject json = new JSONObject(jsonString);
-                        Iterator<String> keys = json.keys();
-                        while(keys.hasNext()) {
-                            String key = keys.next();
-                            System.out.println(key + ": " + json.get(key));
-                        }
+                        System.out.println(textMessage.getText());
                     } catch (JMSException e) {
                         throw new RuntimeException(e);
                     }
