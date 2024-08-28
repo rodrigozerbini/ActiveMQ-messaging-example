@@ -66,7 +66,3 @@ To use the provided classes, ensure that you have Apache ActiveMQ installed and 
 - **Apache ActiveMQ**: For messaging. Version 5.17.3 is used in this project.
 - **Java Development Kit (JDK) 11 or later**: The project is compiled using JDK 11.
 
-## License
-
-This project is licensed under the MIT License.
-
